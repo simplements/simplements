@@ -1,0 +1,19 @@
+{
+  "name": "onefy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf ./dist && npm run build:app",
+    "build:app": "esbuild src/app.ts --bundle --outdir=dist --splitting --format=esm"
+  },
+  "author": "yazart",
+  "license": "WTFPL",
+  "dependencies": {
+    "@editorjs/editorjs": "^2.23.2",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "esbuild": "0.14.23"
+  }
+}
