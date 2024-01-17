@@ -2,17 +2,16 @@ import('../package.json').then(({version})=>{
     console.log('version', version);
 })
 
+let editor: EditorJS.default;
 import('./plugins').then(m=>{
     const plugins = Object.values(m);
     plugins.forEach((plugin)=>{
-
             plugin.component().then((cmp)=>{
                 window.customElements.define(
                     plugin.selector,
                     cmp,
                 )
             })
-
     })
     return plugins.map((plugin)=>Promise.all([Promise.resolve(plugin.pluginName),plugin.plugin()]))
 
@@ -29,11 +28,6 @@ import('./plugins').then(m=>{
 })
 
 
-
-
-
-
-let editor: EditorJS.default;
 
 const saveButton = document.getElementById('save');
 const output = document.getElementById('output');
