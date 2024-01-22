@@ -2,3 +2,13 @@ body {
     font-family: sans-serif;
     font-size: 16px;
 }
+.editor-container{
+    position: absolute;
+    border: 1px solid red;
+    margin-left: 80px;
+    height: 300px;
+}
+.editor-container .editor-wrapper{
+    position: absolute;
+    height: 300px;
+}

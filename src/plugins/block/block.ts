@@ -17,7 +17,7 @@ export class BlockWidget implements PluginWidget {
     }
     save(blockContent: HTMLInputElement){
         return {
-            url: blockContent.value
+            config: blockContent.value
         }
     }
 }

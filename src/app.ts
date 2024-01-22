@@ -1,40 +1,16 @@
 import('../package.json').then(({version})=>{
     console.log('version', version);
 })
+console.log('a');
 
-let editor: EditorJS.default;
-import('./plugins').then(m=>{
-    const plugins = Object.values(m);
-    plugins.forEach((plugin)=>{
-            plugin.component().then((cmp)=>{
-                window.customElements.define(
-                    plugin.selector,
-                    cmp,
-                )
-            })
+import('./editor.component')
+    .then((m)=> m.EditorComponent)
+    .then((cmp)=> window.customElements.define(
+        'editor-js',
+        cmp,
+    ))
+    .then(()=>{
+        (document.querySelector('editor-js') as import('./editor.component').EditorComponent)
+            .subscribeToValueChanges((e)=>console.log(e))
     })
-    return plugins.map((plugin)=>Promise.all([Promise.resolve(plugin.pluginName),plugin.plugin()]))
 
-}).then((plugins) => {
-    return Promise.all([import('@editorjs/editorjs'), ...plugins]).then(([{default: EditorJS},...resolvedPlugins])=>{
-        editor = new EditorJS({
-            autofocus: true,
-            tools: resolvedPlugins.reduce((acc: Record<string, PluginWidget>, [name, pluginWidget, ])=>{
-                acc[name] = pluginWidget;
-                return acc;
-            }, {})
-        })
-    })
-})
-
-
-
-const saveButton = document.getElementById('save');
-const output = document.getElementById('output');
-
-saveButton?.addEventListener('click', () => {
-    editor.save().then( savedData => {
-        if(output)
-        output.innerHTML = JSON.stringify(savedData, null, 4);
-    })
-})
