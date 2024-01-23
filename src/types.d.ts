@@ -4,9 +4,9 @@ declare abstract class PluginWidget {
 }
 
 declare type PluginDefinitionType = {
-    pluginName: string;
+    pluginName?: string;
     selector: string;
     description: string;
     component: () => Promise<CustomElementConstructor>;
-    plugin: () => Promise<PluginWidget>;
+    plugin: () => Promise<PluginWidget | null>;
 }

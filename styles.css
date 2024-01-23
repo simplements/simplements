@@ -2,13 +2,240 @@ body {
     font-family: sans-serif;
     font-size: 16px;
 }
-.editor-container{
-    position: absolute;
-    border: 1px solid red;
-    margin-left: 80px;
-    height: 300px;
+:root {
+    --base-01: #FFFFFF;
+    --base-02: #F6F6F6;
+    --base-03: #EDEDED;
+    --base-04: #E0E0E0;
+    --base-05: #B0B0B0;
+    --base-06: #959595;
+    --base-07: #808080;
+    --base-08: #333333;
+    --base-09: #000000;
+    --primary: #275EFE;
+    --primary-hover: #6C86E2;
+    --primary-active: #275EFE;
+    --secondary: #F4F4F4;
+    --secondary-hover: #ECECEC;
+    --secondary-active: #E0E0E0;
 }
-.editor-container .editor-wrapper{
+
+
+.form-control {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 66px;
+    align-content: center;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.form-control input,
+.form-control textarea,
+.form-control select {
+    display: flex;
+    flex-grow: 1;
+}
+
+.form-control label{
+    display: inline-block;
+    white-space: nowrap;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    line-height: 20px;
+    color: var(--base-06);
+    transition: 0.2s ease-in;
+}
+
+
+.form-control input[type=text] ~ label,
+.form-control textarea ~ label,
+.form-control select ~ label{
     position: absolute;
-    height: 300px;
+    left: 12px;
+    top: 22px;
+    font-weight: 500;
+}
+
+.form-control textarea,
+.form-control input[type=text],
+.form-control select
+{
+    box-sizing: content-box;
+    font-family: sans-serif;
+    height: 36px;
+    border: 1px solid var(--base-03);
+    font-size: 16px;
+    padding: 20px 12px 8px;
+    background: var(--base-03);
+    border-radius: 8px;
+}
+.form-control input[type=text]:focus,
+.form-control select:focus,
+.form-control textarea:focus {
+    color: var(--primary);
+}
+
+.form-control input[type=text]:focus ~ label,
+.form-control input[type=text]:not(:placeholder-shown) ~ label,
+.form-control select:focus ~ label,
+.form-control select:not(:placeholder-shown) ~ label,
+.form-control textarea:focus ~ label,
+.form-control textarea:not(:placeholder-shown) ~ label{
+    top:4px;
+    font-size: 12px;
+    color: var(--primary);
+}
+
+.form-control input[type=text][value]:invalid,
+.form-control input[type=text][value=""]:invalid,
+.form-control input[type=text][value]:invalid ~ label
+{
+    color: red;
+}
+
+.form-control textarea {
+    height: unset;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    --active: #275EFE;
+    --active-inner: #fff;
+    --border: #BBC1E1;
+    --border-hover: #275EFE;
+    --background: #fff;
+    --disabled: #F6F8FF;
+    --disabled-inner: #E1E6F9;
+    appearance: none;
+    height: 21px;
+    outline: none;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    border: 1px solid var(--bc, var(--border));
+    background: var(--b, var(--background));
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+}
+input[type=checkbox]:after,
+input[type=radio]:after {
+    content: "";
+    display: block;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
+}
+input[type=checkbox]:checked,
+input[type=radio]:checked {
+    --b: var(--active);
+    --bc: var(--active);
+    --d-o: .3s;
+    --d-t: .6s;
+    --d-t-e: cubic-bezier(.2, .85, .32, 1.2);
+}
+input[type=checkbox]:disabled,
+input[type=radio]:disabled {
+    --b: var(--disabled);
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+input[type=checkbox]:disabled:checked,
+input[type=radio]:disabled:checked {
+    --b: var(--disabled-inner);
+    --bc: var(--border);
+}
+input[type=checkbox]:disabled + label,
+input[type=radio]:disabled + label {
+    cursor: not-allowed;
+}
+input[type=checkbox]:hover:not(:checked):not(:disabled),
+input[type=radio]:hover:not(:checked):not(:disabled) {
+    --bc: var(--border-hover);
+}
+input[type=checkbox]:focus,
+input[type=radio]:focus {
+    border-color: var(--active);
+}
+input[type=checkbox]:not(.switch),
+input[type=radio]:not(.switch) {
+    width: 21px;
+}
+input[type=checkbox]:not(.switch):after,
+input[type=radio]:not(.switch):after {
+    opacity: var(--opacity, 0);
+}
+input[type=checkbox]:not(.switch):checked,
+input[type=radio]:not(.switch):checked {
+    --opacity: 1;
+}
+input[type=checkbox] + label,
+input[type=radio] + label {
+    font-size: 16px;
+    line-height: 21px;
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+input[type=checkbox]:not(.switch) {
+    border-radius: 7px;
+}
+input[type=checkbox]:not(.switch):after {
+    width: 5px;
+    height: 9px;
+    border: 2px solid var(--active-inner);
+    border-top: 0;
+    border-left: 0;
+    left: 7px;
+    top: 4px;
+    transform: rotate(var(--r, 20deg));
+}
+input[type=checkbox]:not(.switch):checked {
+    --r: 43deg;
+}
+input[type=checkbox].switch {
+    width: 38px;
+    flex-grow: 0;
+    border-radius: 11px;
+}
+input[type=checkbox].switch:after {
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background: var(--ab, var(--border));
+    transform: translateX(var(--x, 0));
+}
+input[type=checkbox].switch:checked {
+    --ab: var(--active-inner);
+    --x: 17px;
+}
+input[type=checkbox].switch:disabled:not(:checked):after {
+    opacity: 0.6;
+}
+
+input[type=radio] {
+    border-radius: 50%;
+}
+input[type=radio]:after {
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: var(--active-inner);
+    opacity: 0;
+    transform: scale(var(--scale, 0.7));
+}
+input[type=radio]:checked {
+    --scale: .5;
 }

@@ -1,4 +1,4 @@
-export const PluginDefinition: PluginDefinitionType = {
+export const BlockDefinition: PluginDefinitionType = {
     pluginName: 'block',
     selector: 'block-config',
     description: 'plugin for define blocks and configure metadata',

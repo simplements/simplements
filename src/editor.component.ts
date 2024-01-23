@@ -12,37 +12,36 @@ export class EditorComponent extends HTMLElement {
 <div id='${this.uuid}'></div>`
     }
     connectedCallback() {
+        const data = JSON.parse(localStorage.getItem('data') || "{}");
         Promise.all([Editor, this.getPlugins()]).then(([editor, plugins])=>{
             this.editor = new editor({
                 autofocus: true,
                 tools: plugins, // todo: append all plugins
-                holderId: this.uuid
+                holderId: this.uuid,
+                data: data
             });
         }).then(()=>{
             document.querySelector(`#save_button__uuid-${this.uuid}`)
-                ?.addEventListener('click', async ()=>{
-                    const value  = await this.getData();
-                    this.emitValue(value);
-                })
+                ?.addEventListener('click', async ()=>this.emitValue())
         });
     }
     async getPlugins() {
         return PluginsRepository.then((plugins)=>{
             return plugins.reduce((acc: Record<string, PluginWidget>, [name, pluginWidget ])=>{
-                acc[name] = pluginWidget;
+                if(pluginWidget && name) {
+                    acc[name] = pluginWidget;
+                }
                 return acc;
             }, {})
         })
     }
 
-    async getData(): Promise<Record<string, unknown>> {
-        return await (this.editor?.save() || Promise.resolve({}));
-    }
-
     subscribeToValueChanges(cb: (e: Record<string, unknown>)=> void){
         this.cbArray.push(cb);
     }
-    emitValue(value: Record<string, unknown>){
+    async emitValue(){
+        const value = await (this.editor?.save() || Promise.resolve({}));
+        localStorage.setItem('data', JSON.stringify(value));
         this.cbArray.forEach((cb)=>{
             try{
                 cb(value);

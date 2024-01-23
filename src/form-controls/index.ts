@@ -1,0 +1,1 @@
+export * from './wrapper/conrol-wrapper.component';
