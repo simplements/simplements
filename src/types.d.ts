@@ -10,3 +10,7 @@ declare type PluginDefinitionType = {
     component: () => Promise<CustomElementConstructor>;
     plugin: () => Promise<PluginWidget | null>;
 }
+
+declare abstract class CustomElement{
+    static selector: string;
+}

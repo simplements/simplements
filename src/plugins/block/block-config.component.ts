@@ -41,10 +41,9 @@ export class BlockConfigComponent extends HTMLElement {
             </style>
             <form class="block-config">
                     <h3>Создание типа блока</h3>
-                    <div class="form-control">
-                        <input type="text" name="blockTypeName" id="blockTypeName" required placeholder=" "/>
-                        <label for="blockTypeName">Название типа блока</label>
-                    </div>
+                    <control-wrapper label="Название типа блока">
+                        <input slot="control" type="text" name="blockTypeName" id="blockTypeName" required placeholder=" "/>
+                    </control-wrapper>
                     <div class="form-control">
                         <textarea name="blockDescription" id="blockDescription" required placeholder=" "></textarea>
                         <label for="blockDescription">Описание блока</label>
