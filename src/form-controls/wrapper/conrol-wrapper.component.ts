@@ -1,7 +1,8 @@
 export class ControlWrapperComponent extends HTMLElement implements CustomElement{
     static selector = 'control-wrapper'
-    static observedAttributes = ["label"];
+    static observedAttributes = ["label", "floatingLabel"];
     label: string | null |undefined;
+    floatingLabel: boolean| null |undefined = true;
 
 
     private _shadowDom;
@@ -14,7 +15,6 @@ export class ControlWrapperComponent extends HTMLElement implements CustomElemen
     }
     render(){
         this._shadowDom.innerHTML = '';
-        this._shadowDom.onslotchange =(...args)=>{ console.log(args)}
         this._shadowDom.appendChild(this.templateT().content.cloneNode(true));
     }
 
@@ -55,11 +55,7 @@ export class ControlWrapperComponent extends HTMLElement implements CustomElemen
     transition: 0.2s ease-in;
 }
 
-
-
-.form-control ::slotted(input[type=text]) + label,
-.form-control ::slotted(textarea ~ label) ,
-.form-control ::slotted(select) ~ label{
+.form-control label {
     position: absolute;
     left: 12px;
     top: 22px;
@@ -96,13 +92,6 @@ export class ControlWrapperComponent extends HTMLElement implements CustomElemen
     color: var(--primary);
 }
 
-.form-control input[type=text][value]:invalid,
-.form-control input[type=text][value=""]:invalid,
-.form-control input[type=text][value]:invalid ~ label
-{
-    color: red;
-}
-
 .form-control textarea {
     height: unset;
 }
@@ -124,6 +113,10 @@ export class ControlWrapperComponent extends HTMLElement implements CustomElemen
         if(name === 'label'){
             this.label = value;
         }
+        if(name === 'floatingLabel'){
+            this.floatingLabel = value === 'true';
+        }
+
         this.render();
 
     }

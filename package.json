@@ -3,18 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build:watch": "watch 'npm run build' ./src",
-    "build": "rimraf ./dist && npm run build:app",
-    "build:app": "esbuild src/app.ts --bundle --outdir=dist --splitting --format=esm"
+    "serve": "rimraf ./dist && node build.js --serve",
+    "build:app": "rimraf ./dist && node build.js"
   },
   "author": "yazart",
   "license": "WTFPL",
   "dependencies": {
+    "@chialab/esbuild-plugin-html": "^0.14.19",
+    "@deanc/esbuild-plugin-postcss": "^1.0.2",
+    "@editorjs/editorjs": "^2.23.2",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
-    "esbuild": "0.14.23",
+    "esbuild": "^0.14.23",
     "watch": "^1.0.2"
   }
 }

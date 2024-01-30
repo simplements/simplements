@@ -1,4 +1,5 @@
-
+import template  from './block-config.component.html';
+import styles from './block-config.component.css';
 interface IBlockConfig {
     name: string;
     description: string;
@@ -26,31 +27,9 @@ export class BlockConfigComponent extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
             <style>
-                .block-config{
-                    position: relative;
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    background: var(--base-02);
-                    border: 1px solid var(--base-03);
-                    border-radius: 8px;
-                    padding: 8px;
-                    align-content: space-between;
-                    gap: 16px;
-                }
+                ${styles};
             </style>
-            <form class="block-config">
-                    <h3>Создание типа блока</h3>
-                    <control-wrapper label="Название типа блока">
-                        <input slot="control" type="text" name="blockTypeName" id="blockTypeName" required placeholder=" "/>
-                    </control-wrapper>
-                    <div class="form-control">
-                        <textarea name="blockDescription" id="blockDescription" required placeholder=" "></textarea>
-                        <label for="blockDescription">Описание блока</label>
-                    </div>
-                    <h4>Аттрибуты блока</h4>
-                    <attribute-config></attribute-config>
-            </form>
+            ${template}
         `
     }
 

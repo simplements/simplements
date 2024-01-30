@@ -14,3 +14,6 @@ declare type PluginDefinitionType = {
 declare abstract class CustomElement{
     static selector: string;
 }
+
+declare module '*.html';
+declare module '*.css';

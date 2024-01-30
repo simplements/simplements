@@ -22,8 +22,6 @@ body {
 
 
 
-
-
 .form-control input[type=text] ~ label,
 .form-control textarea ~ label,
 .form-control select ~ label{
