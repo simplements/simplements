@@ -16,11 +16,12 @@ export class BlockWidget implements PluginWidget {
     }
     render() {
         const elem: import('./block-config.component').BlockConfigComponent = document.createElement('block-config') as import('./block-config.component').BlockConfigComponent;
-        elem.privatevalue = JSON.stringify(this.data);
+        elem.privateValue = JSON.stringify(this.data);
         console.log(this.data);
         return elem;
     }
     save(blockContent: HTMLInputElement){
+        console.log(blockContent);
         return {
             config: blockContent.value
         }

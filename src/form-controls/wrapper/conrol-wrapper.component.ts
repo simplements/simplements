@@ -1,123 +1,45 @@
-export class ControlWrapperComponent extends HTMLElement implements CustomElement{
-    static selector = 'control-wrapper'
-    static observedAttributes = ["label", "floatingLabel"];
-    label: string | null |undefined;
-    floatingLabel: boolean| null |undefined = true;
+import {attr, cmp, Component} from "../../core/component";
+import {EVENTS} from "../../core/events";
+import * as events from "events";
 
 
-    private _shadowDom;
+@cmp({
+    selector: 'control-wrapper',
+    template: import('html:./control-wrapper.compoent.html'),
+    styles: import('css:./control-wrapper.component.css'),
+})
+export class ControlWrapperComponent extends Component {
+    @attr
+    label: string | null |undefined = null;
+    @attr
+    controlName: string | null = null;
+    private control: Element | undefined = undefined;
 
-
-    constructor() {
-        super();
-        this._shadowDom = this.attachShadow({mode:'open'});
-        this.render();
-    }
-    render(){
-        this._shadowDom.innerHTML = '';
-        this._shadowDom.appendChild(this.templateT().content.cloneNode(true));
-    }
-
-    templateT(): HTMLTemplateElement {
-        const template = document.createElement('template');
-        template.innerHTML = `
-
-            <style>
-                .form-control {
-                    position: relative;
-                    display: flex;
-                    flex-direction: row;
-                    width: 100%;
-                    min-height: 66px;
-                    align-content: center;
-                    align-items: center;
-                    justify-content: flex-start;
-                    flex-wrap: nowrap;
-                    overflow: hidden;
-                }
-                
-.form-control ::slotted(input),
-.form-control ::slotted(textarea),
-.form-control ::slotted( select) {
-    display: flex;
-    flex-grow: 1;
-}
-
-.form-control label{
-    display: inline-block;
-    white-space: nowrap;
-    width: 80%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 16px;
-    line-height: 20px;
-    color: var(--base-06);
-    transition: 0.2s ease-in;
-}
-
-.form-control label {
-    position: absolute;
-    left: 12px;
-    top: 22px;
-    font-weight: 500;
-}
-
-.form-control ::slotted(textarea),
-.form-control ::slotted(input[type=text]),
-.form-control ::slotted(select)
-{
-    box-sizing: content-box;
-    font-family: sans-serif;
-    height: 36px;
-    border: 1px solid var(--base-03);
-    font-size: 16px;
-    padding: 20px 12px 8px;
-    background: var(--base-03);
-    border-radius: 8px;
-}
-.form-control ::slotted(input[type=text]:focus),
-.form-control ::slotted(select:focus),
-.form-control ::slotted(textarea:focus) {
-    color: var(--primary);
-}
-
-.form-control ::slotted(input[type=text]:focus) ~ label,
-.form-control ::slotted(input[type=text]:not(:placeholder-shown)) ~ label,
-.form-control ::slotted(select:focus) ~ label,
-.form-control ::slotted(select:not(:placeholder-shown)) ~ label,
-.form-control ::slotted(textarea:focus) ~ label,
-.form-control ::slotted(textarea:not(:placeholder-shown)) ~ label{
-    top:4px;
-    font-size: 12px;
-    color: var(--primary);
-}
-
-.form-control textarea {
-    height: unset;
-}
-
-            </style>
-            <div class="form-control">
-                <slot name="control"></slot>
-                <label>${this.label}</label>
-            </div>
-        `;
-        return template;
+    private eventControlChange = (e: Event) =>{
+        const val = `${(this.control as HTMLInputElement).value}`;
+        const newEv = Object.assign(EVENTS.change(), {value:val})
+        this.control?.dispatchEvent(newEv);
     }
 
-    attributeChangedCallback(
-        name: string,
-        _old: string | null,
-        value: string | null
-    ) {
-        if(name === 'label'){
-            this.label = value;
-        }
-        if(name === 'floatingLabel'){
-            this.floatingLabel = value === 'true';
+    override render(){
+        if(!this._shadowDom) return;
+        if(!this.control){
+            this.control = this._shadowDom?.querySelector('[slot="control"]')|| undefined;
+            if(this.control){
+                this.control.addEventListener('input', this.eventControlChange);
+                this.control.addEventListener('change', this.eventControlChange);
+                this.control.addEventListener('blur', this.eventControlChange);
+            }
         }
 
-        this.render();
-
+        const label = this._shadowDom.querySelector('label') || null;
+        if(label && this.label){
+            label.innerHTML = this.label;
+        }
+        if(this.controlName && label){
+            this.control?.setAttribute('id', this.controlName)
+            this.control?.setAttribute('name', this.controlName)
+            label.setAttribute('for', this.controlName);
+        }
     }
 }

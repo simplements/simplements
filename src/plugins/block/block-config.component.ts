@@ -1,5 +1,4 @@
-import template  from './block-config.component.html';
-import styles from './block-config.component.css';
+import {attr, cmp, Component} from "../../core/component";
 interface IBlockConfig {
     name: string;
     description: string;
@@ -15,31 +14,19 @@ interface IBlockConfig {
 
 }
 
-export class BlockConfigComponent extends HTMLElement {
-    static observedAttributes = ["privatevalue"];
-    privatevalue: IBlockConfig | unknown;
-
-    constructor() {
-        super();
-        console.log(this.privatevalue);
-    }
-
-    connectedCallback() {
-        this.innerHTML = `
-            <style>
-                ${styles};
-            </style>
-            ${template}
-        `
-    }
-
-    attributeChangedCallback(name:unknown, oldValue:unknown, newValue:unknown){
-        console.log('hellow', name, oldValue, newValue)
-        console.log(this.privatevalue);
-    }
-
+@cmp({
+    selector: 'block-config',
+    template: import('html:./block-config.component.html'),
+    styles: import('css:./block-config.component.css'),
+})
+export class BlockConfigComponent extends Component {
+    @attr
+    privateValue: IBlockConfig | unknown;
     value(): Record<string, unknown> {
         return {};
     }
 
+    updateData(...args: unknown[]){
+        console.log(args);
+    }
 }

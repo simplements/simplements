@@ -13,6 +13,9 @@ declare type PluginDefinitionType = {
 
 declare abstract class CustomElement{
     static selector: string;
+    static extends: string | undefined;
+    _shadowDom: ShadowRoot;
+    [key: string]: unknown
 }
 
 declare module '*.html';

@@ -1,0 +1,26 @@
+:host {
+    display: flex;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid var(--base-03);
+    width: 100%;
+    flex-direction: row;
+    justify-content: stretch;
+    & form{
+        width: 100%;
+    }
+}
+
+.attribute-form-row{
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    flex-grow: 1;
+    column-gap: 16px;
+    margin-bottom: 16px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    align-content: center;
+
+}
