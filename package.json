@@ -11,6 +11,8 @@
   "author": "yazart",
   "license": "WTFPL",
   "dependencies": {
+    "@editorjs/editorjs": "^2.29.0",
+    "@maverick-js/signals": "^5.11.4",
     "autoprefixer": "^10.4.17",
     "esbuild-plugin-inline-import": "^1.0.4",
     "esbuild-postcss-plugin": "^0.0.7",

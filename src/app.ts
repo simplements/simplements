@@ -21,8 +21,8 @@ import('./editor.component')
         'editor-js',
         cmp,
     ))
-    .then(()=>{
-        (document.querySelector('editor-js') as import('./editor.component').EditorComponent)
-            .subscribeToValueChanges((e)=>console.log(e))
-    })
+//     .then(()=>{
+//         (document.querySelector('editor-js') as import('./editor.component').EditorComponent)
+//             .subscribeToValueChanges((e)=>console.log(e))
+//     })
 

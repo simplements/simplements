@@ -1,5 +1,5 @@
 <form class="block-config">
-    <h3>Создание типа блока</h3>
+    <h3>{{labelHeader}} <button type="button" (click)="change()">change</button></h3>
     <control-wrapper @label="Название типа блока" @controlname="blockDescription">
         <input slot="control" type="text" required placeholder=" "/>
     </control-wrapper>

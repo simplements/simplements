@@ -1,4 +1,5 @@
 import {attr, cmp, Component} from "../../core/component";
+import {effect, signal, tick} from "@maverick-js/signals";
 interface IBlockConfig {
     name: string;
     description: string;
@@ -22,11 +23,17 @@ interface IBlockConfig {
 export class BlockConfigComponent extends Component {
     @attr
     privateValue: IBlockConfig | unknown;
+
+    labelHeader = signal('Создание типа блока');
+
     value(): Record<string, unknown> {
         return {};
     }
 
     updateData(...args: unknown[]){
         console.log(args);
+    }
+    change(){
+        this.labelHeader.set("updated");
     }
 }

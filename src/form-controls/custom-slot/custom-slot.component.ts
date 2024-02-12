@@ -1,4 +1,5 @@
 import {attr, cmp, Component} from "../../core/component";
+import {effect, signal} from "@maverick-js/signals";
 
 
 @cmp({
@@ -8,14 +9,20 @@ import {attr, cmp, Component} from "../../core/component";
 })
 export class CustomSlotComponent extends Component{
     @attr
-    name: string | null |undefined = null;
+    name = signal("");
     elem: HTMLElement | null = null;
-    override render() {
-        if(this.name){
-            this.elem = (this.parentNode?.parentNode as ShadowRoot).host.querySelector(`[slot="${this.name}"]`);
-        }
-        if(this.elem){
-            this.insertAdjacentElement('afterend', this.elem);
-        }
+
+    override init() {
+        effect(()=>{
+            const name = this.name();
+            if(name){
+                if(name){
+                    this.elem = (this.parentNode?.parentNode as ShadowRoot).host.querySelector(`[slot="${name}"]`);
+                }
+                if(this.elem){
+                    this.insertAdjacentElement('afterend', this.elem);
+                }
+            }
+        })
     }
 }

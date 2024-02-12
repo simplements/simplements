@@ -1,6 +1,7 @@
 import {attr, cmp, Component} from "../../core/component";
 import {EVENTS} from "../../core/events";
-import * as events from "events";
+import {effect, signal} from "@maverick-js/signals";
+import {createTemplate} from "../../core/update-attributes-template";
 
 
 @cmp({
@@ -10,15 +11,26 @@ import * as events from "events";
 })
 export class ControlWrapperComponent extends Component {
     @attr
-    label: string | null |undefined = null;
+    label= signal("");
     @attr
-    controlName: string | null = null;
+    controlName = signal("");
     private control: Element | undefined = undefined;
 
     private eventControlChange = (e: Event) =>{
         const val = `${(this.control as HTMLInputElement).value}`;
         const newEv = Object.assign(EVENTS.change(), {value:val})
         this.control?.dispatchEvent(newEv);
+    }
+
+    override init() {
+        effect(()=>{
+            const value = this.controlName();
+            const control = this.querySelector('[slot="control"]')|| undefined;
+            if(control){
+                control?.setAttribute('id', value)
+                control?.setAttribute('name', value)
+            }
+        });
     }
 
     override render(){
@@ -30,16 +42,6 @@ export class ControlWrapperComponent extends Component {
                 this.control.addEventListener('change', this.eventControlChange);
                 this.control.addEventListener('blur', this.eventControlChange);
             }
-        }
-
-        const label = this._shadowDom.querySelector('label') || null;
-        if(label && this.label){
-            label.innerHTML = this.label;
-        }
-        if(this.controlName && label){
-            this.control?.setAttribute('id', this.controlName)
-            this.control?.setAttribute('name', this.controlName)
-            label.setAttribute('for', this.controlName);
         }
     }
 }

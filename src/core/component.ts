@@ -1,4 +1,7 @@
-
+import {serializeOuter} from "parse5";
+import {XEvent} from "./events";
+import {createTemplate, recursiveAttributeUpdate, TemplateRenderCallbacks} from "./update-attributes-template";
+import {tick} from "@maverick-js/signals";
 export interface ComponentConfig {
     selector: string,
     template: Promise<{default:string}>,
@@ -12,14 +15,15 @@ export abstract class Component extends HTMLElement implements CustomElement {
     _shadowDom!: ShadowRoot;
     static get observedAttributes() {
         for(let attr of this.attributesMap.keys()){
-            if(attr.includes(`@attr-${this.instanceName}`.toLowerCase())){
+            if(attr.includes(`smpl-${this.instanceName}`.toLowerCase())){
                 const val = this.attributesMap.get(attr);
                 if(val){
                     this.attributesMap.delete(attr);
-                    this.attributesMap.set(`@attr-${this.selector}-${val}`.toLowerCase(), val);
+                    this.attributesMap.set(`smpl-${this.selector}-${val}`.toLowerCase(), val);
                 }
             }
         }
+        console.log([...this.attributesMap.keys()])
         return (
             this.attributesMap && [...this.attributesMap.keys()]
         );
@@ -37,7 +41,17 @@ export abstract class Component extends HTMLElement implements CustomElement {
         const attributeName = this.attributesMap.get(name);
         if(attributeName && this.hasOwnProperty(attributeName)){
             const update = {[attributeName]: value};
-            Object.assign(this, update);
+            console.log(update);
+            if(this[attributeName]){
+                try{
+                    // @ts-ignore
+                    this[attributeName].set(value);
+
+                } catch (e) {
+                    Object.assign(this, update);
+                }
+            }
+            // Object.assign(this, update);
         }
         this.render();
     }
@@ -50,7 +64,8 @@ export abstract class Component extends HTMLElement implements CustomElement {
     [key: string]: unknown;
 
     connectedCallback(){
-        this.constructTemplate().then((e)=>{
+        this.constructTemplate().then(([e, callbacks])=>{
+
             const template = e.content.cloneNode(true);
             this._shadowDom.appendChild(template);
             const elems = this._shadowDom.querySelectorAll('[x-change]')
@@ -58,48 +73,65 @@ export abstract class Component extends HTMLElement implements CustomElement {
                 const attr = elem.getAttribute('x-change')?.replace(/\(|\)/gi, '');
 
                 // @ts-ignore
-                elem.addEventListener('x-change', (event: EVENTS.change)=>{
-
+                elem.addEventListener('x-change', (event: CustomEvent<XEvent>)=>{
                     const cb = attr? this[attr]: undefined;
                     if(cb && typeof cb === 'function'){
                         cb(event);
                     }
                 })
             }
+            if(callbacks.computed.length){
+                callbacks.computed.forEach((apply)=>{
+                    apply(this._shadowDom, this);
+                })
+            }
+            if(callbacks.listeners.length){
+                callbacks.listeners.forEach((apply)=>{
+                    apply(this._shadowDom, this);
+                })
+            }
+            this.init();
             this.render();
         });
     }
 
-    constructTemplate(): Promise<HTMLTemplateElement> {
-        const tmpNode = document.createElement('template');
+    constructTemplate(): Promise<[HTMLTemplateElement, TemplateRenderCallbacks]> {
         return Promise.all([
             this.config.styles.then((e)=> e.default),
-            this.config.template.then((e)=>e.default),
-        ]).then(([styles, template])=>{
-
-            const reducedTemplate = template.replaceAll(/<(\S+).+(@\S+).+>/ig,(substring, ...args)=> {
-                const string1 = substring;
-                const scope = args[0];
-                console.log('repl', string1, args);
-                if(string1 &&  scope){
-                    return string1.replaceAll(/@(\S+)=/ig, `@attr-${scope}-$1=`)
+            this.config.template.then((e)=>{
+                try {
+                    return JSON.parse(e.default)
+                }catch (e){
+                    return null;
                 }
-                return  string1;
-            })
-            console.log(reducedTemplate);
+            }),
+        ]).then(([styles, templateJson])=>{
 
-            tmpNode.innerHTML = `
-                        <style>
-                         ${styles}
-                         </style>
-                       ${reducedTemplate}`
-            return tmpNode
+            const tmpNode = document.createElement('template');
+            if(!templateJson){
+                tmpNode.innerHTML = '';
+                return [tmpNode, {listeners:[], computed:[]}];
+            }
+            console.log(templateJson);
+            recursiveAttributeUpdate(templateJson)
+
+
+            if(styles){
+                tmpNode.innerHTML+= `<style>${styles}</style>`;
+            }
+
+            const [tmpl, callbacks] = createTemplate(templateJson, null);
+            tmpNode.innerHTML+= tmpl.innerHTML;
+            return [tmpNode, callbacks];
         })
     }
 
     render(){
         console.log('super');
     };
+    init(){
+        console.log('init');
+    }
 }
 
 interface Constructor<T = Component> {
@@ -123,5 +155,5 @@ export function cmp(config: ComponentConfig) {
 }
 
 export function attr(target: Component, propertyKey: string){
-    Component.attributesMap.set(`@attr-${target.constructor.name}-${propertyKey}`.toLowerCase(),propertyKey);
+    Component.attributesMap.set(`smpl-${target.constructor.name}-${propertyKey}`.toLowerCase(),propertyKey);
 }
