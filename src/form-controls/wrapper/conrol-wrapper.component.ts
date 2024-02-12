@@ -18,30 +18,26 @@ export class ControlWrapperComponent extends Component {
 
     private eventControlChange = (e: Event) =>{
         const val = `${(this.control as HTMLInputElement).value}`;
-        const newEv = Object.assign(EVENTS.change(), {value:val})
-        this.control?.dispatchEvent(newEv);
+        const newEv = Object.assign(EVENTS.modelChange(val), )
+        this.dispatchEvent(newEv);
     }
 
     override init() {
+        this.control = this._shadowDom?.querySelector('[slot="control"]')|| this.querySelector('[slot="control"]')|| undefined;
+        this.addModelChangeListener();
         effect(()=>{
             const value = this.controlName();
-            const control = this.querySelector('[slot="control"]')|| undefined;
-            if(control){
-                control?.setAttribute('id', value)
-                control?.setAttribute('name', value)
+            if(this.control){
+                this.control?.setAttribute('id', value)
+                this.control?.setAttribute('name', value)
             }
         });
     }
-
-    override render(){
-        if(!this._shadowDom) return;
-        if(!this.control){
-            this.control = this._shadowDom?.querySelector('[slot="control"]')|| undefined;
-            if(this.control){
-                this.control.addEventListener('input', this.eventControlChange);
-                this.control.addEventListener('change', this.eventControlChange);
-                this.control.addEventListener('blur', this.eventControlChange);
-            }
+    addModelChangeListener(){
+        if(this.control){
+            this.control.addEventListener('input', this.eventControlChange);
+            this.control.addEventListener('change', this.eventControlChange);
+            this.control.addEventListener('blur', this.eventControlChange);
         }
     }
 }

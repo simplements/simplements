@@ -1,5 +1,6 @@
 import {attr, cmp, Component} from "../../core/component";
-import {effect, signal, tick} from "@maverick-js/signals";
+import {signal} from "@maverick-js/signals";
+import {ModelChangeEvent} from "../../core/events";
 interface IBlockConfig {
     name: string;
     description: string;
@@ -24,14 +25,16 @@ export class BlockConfigComponent extends Component {
     @attr
     privateValue: IBlockConfig | unknown;
 
+    data =  signal("");
+
     labelHeader = signal('Создание типа блока');
 
     value(): Record<string, unknown> {
         return {};
     }
 
-    updateData(...args: unknown[]){
-        console.log(args);
+    updateData(event: CustomEvent<ModelChangeEvent>){
+        this.data.set(event?.detail?.value);
     }
     change(){
         this.labelHeader.set("updated");
