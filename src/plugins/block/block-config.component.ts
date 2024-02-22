@@ -1,4 +1,4 @@
-import {attr, cmp, Component} from "../../core/component";
+import {attr, cmp, Simplement} from "../../core/simplement";
 import {signal} from "@maverick-js/signals";
 import {ModelChangeEvent} from "../../core/events";
 interface IBlockConfig {
@@ -21,7 +21,7 @@ interface IBlockConfig {
     template: import('html:./block-config.component.html'),
     styles: import('css:./block-config.component.css'),
 })
-export class BlockConfigComponent extends Component {
+export class BlockConfigComponent extends Simplement {
     @attr
     privateValue: IBlockConfig | unknown;
 

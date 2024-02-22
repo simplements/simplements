@@ -19,6 +19,9 @@ export function recursiveNodeIds(node, parentId='1', index= 0){
 
 export function parse5JsonTemplateTransformer(html) {
     const parsed = parseFragment(html);
-    const pure  = recursiveNodeIds(parsed.childNodes[0], '0', 0)
-    return JSON.stringify(pure);
+    const pure  = parsed.childNodes.map((node, index)=>recursiveNodeIds(node, '0', index)).filter(x=>!!x);
+    if(pure.length>1){
+        return JSON.stringify(pure);
+    }
+    return JSON.stringify(pure[0]);
 }

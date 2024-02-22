@@ -1,4 +1,4 @@
-import {Component} from "./core/component";
+import {Simplement} from "./core/simplement";
 
 import('../package.json').then(({version})=>{
     console.log('version', version);

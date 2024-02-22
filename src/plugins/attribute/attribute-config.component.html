@@ -1,4 +1,4 @@
-<form>
+
     <div class="attribute-form-row">
         <control-wrapper @controlname="attributeName"  @label="Отображаемое название">
             <input slot="control" type="text" required pattern="^[a-zA-Z]+$" placeholder=" "/>
@@ -32,11 +32,10 @@
                 <option selected value="false">Нет</option>
             </select>
         </control-wrapper>
-        <control-wrapper @label="Значение по умолчанию" @controlname="defaultValue">
+        <control-wrapper @label="Значение по умолчанию" @controlname="defaultValue" @validation="{{validation}}">
             <select slot="control" placeholder=" ">
                 <option value="true">Да</option>
                 <option selected value="false">Нет</option>
             </select>
         </control-wrapper>
     </div>
-</form>

@@ -1,7 +1,10 @@
-import {attr, cmp, Component} from "../../core/component";
+import {attr, cmp, Simplement} from "../../core/simplement";
 import {EVENTS} from "../../core/events";
-import {effect, signal} from "@maverick-js/signals";
-import {createTemplate} from "../../core/update-attributes-template";
+import {computed, effect, signal, WriteSignal} from "@maverick-js/signals";
+import {FormControl} from "../../core/forms";
+
+
+
 
 
 @cmp({
@@ -9,20 +12,30 @@ import {createTemplate} from "../../core/update-attributes-template";
     template: import('html:./control-wrapper.compoent.html'),
     styles: import('css:./control-wrapper.component.css'),
 })
-export class ControlWrapperComponent extends Component {
+export class ControlWrapperComponent extends FormControl {
     @attr
     label= signal("");
     @attr
     controlName = signal("");
+    @attr
+    validation = signal([] as any);
+
     private control: Element | undefined = undefined;
+
+    override valueParser(value: string): unknown {
+        return value;
+    }
 
     private eventControlChange = (e: Event) =>{
         const val = `${(this.control as HTMLInputElement).value}`;
-        const newEv = Object.assign(EVENTS.modelChange(val), )
-        this.dispatchEvent(newEv);
+        const customEvent = EVENTS.modelChange(val)
+        this.value.set(val);
+        console.log(val);
+        this.dispatchEvent(customEvent);
     }
 
     override init() {
+        super.init();
         this.control = this._shadowDom?.querySelector('[slot="control"]')|| this.querySelector('[slot="control"]')|| undefined;
         this.addModelChangeListener();
         effect(()=>{

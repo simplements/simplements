@@ -1,15 +1,14 @@
-import {serializeOuter} from "parse5";
-import {XEvent} from "./events";
+
 import {createTemplate, recursiveAttributeUpdate, TemplateRenderCallbacks} from "./update-attributes-template";
-import {tick} from "@maverick-js/signals";
-export interface ComponentConfig {
+import {isWriteSignal, MaybeSignal, WriteSignal} from "@maverick-js/signals";
+export interface SimplementConfig {
     selector: string,
     template: Promise<{default:string}>,
     styles: Promise<{default:string}>,
 }
-type AttributeMap = Map<string, PropertyKey>;
-export abstract class Component extends HTMLElement implements CustomElement {
-    config!: ComponentConfig;
+
+export abstract class Simplement extends HTMLElement implements CustomElement {
+    config!: SimplementConfig;
     static instanceName: string;
     static attributesMap = new Map();
     _shadowDom!: ShadowRoot;
@@ -18,19 +17,19 @@ export abstract class Component extends HTMLElement implements CustomElement {
             if(attr.includes(`smpl-${this.instanceName}`.toLowerCase())){
                 const val = this.attributesMap.get(attr);
                 if(val){
+
                     this.attributesMap.delete(attr);
                     this.attributesMap.set(`smpl-${this.selector}-${val}`.toLowerCase(), val);
                 }
             }
         }
-        console.log([...this.attributesMap.keys()])
+
         return (
             this.attributesMap && [...this.attributesMap.keys()]
         );
     }
-
     get attributesMap(): Map<string, string> {
-        return Component.attributesMap;
+        return Simplement.attributesMap;
     }
 
     attributeChangedCallback(
@@ -41,17 +40,15 @@ export abstract class Component extends HTMLElement implements CustomElement {
         const attributeName = this.attributesMap.get(name);
         if(attributeName && this.hasOwnProperty(attributeName)){
             const update = {[attributeName]: value};
-            console.log(update);
             if(this[attributeName]){
                 try{
-                    // @ts-ignore
-                    this[attributeName].set(value);
-
+                    if(isWriteSignal(this[attributeName] as MaybeSignal<unknown>)){
+                        (this[attributeName] as WriteSignal<unknown>).set(value);
+                    }
                 } catch (e) {
                     Object.assign(this, update);
                 }
             }
-            // Object.assign(this, update);
         }
         this.render();
     }
@@ -95,52 +92,59 @@ export abstract class Component extends HTMLElement implements CustomElement {
         });
     }
 
-    constructTemplate(): Promise<[HTMLTemplateElement, TemplateRenderCallbacks]> {
-        return Promise.all([
-            this.config.styles.then((e)=> e.default),
-            this.config.template.then((e)=>{
+    async constructTemplate(): Promise<[HTMLTemplateElement, TemplateRenderCallbacks]> {
+        const [styles, templateJson] = await Promise.all([
+            this.config.styles.then((e) => e.default),
+            this.config.template.then((e_1) => {
                 try {
-                    return JSON.parse(e.default)
-                }catch (e){
+                    return JSON.parse(e_1.default);
+                } catch (e_2) {
                     return null;
                 }
             }),
-        ]).then(([styles, templateJson])=>{
-
-            const tmpNode = document.createElement('template');
-            if(!templateJson){
-                tmpNode.innerHTML = '';
-                return [tmpNode, {listeners:[], computed:[]}];
-            }
-            console.log(templateJson);
-            recursiveAttributeUpdate(templateJson)
-
-
-            if(styles){
-                tmpNode.innerHTML+= `<style>${styles}</style>`;
-            }
-
-            const [tmpl, callbacks] = createTemplate(templateJson, null);
-            tmpNode.innerHTML+= tmpl.innerHTML;
+        ]);
+        const tmpNode = document.createElement('template');
+        if (!templateJson) {
+            tmpNode.innerHTML = '';
+            return [tmpNode, {listeners: [], computed: []}];
+        }
+        if (Array.isArray(templateJson)) {
+            templateJson.forEach((node) => recursiveAttributeUpdate(node));
+        }
+        recursiveAttributeUpdate(templateJson);
+        if (styles) {
+            const stl = new CSSStyleSheet();
+            stl.replaceSync(styles);
+            this._shadowDom.adoptedStyleSheets = [stl];
+        }
+        if (Array.isArray(templateJson)) {
+            const callbacks = templateJson
+                .map((node_1) => createTemplate(node_1, null))
+                .reduce((acc: TemplateRenderCallbacks, [el, {computed, listeners}]) => {
+                        tmpNode.innerHTML += el.innerHTML;
+                        acc.computed = [...acc.computed, ...(computed)];
+                        acc.listeners = [...acc.listeners, ...(listeners)];
+                        return acc;
+                    },
+                    {listeners: [], computed: []});
             return [tmpNode, callbacks];
-        })
+        }
+        const [tmpl, callbacks_1] = createTemplate(templateJson, null);
+        tmpNode.innerHTML += tmpl.innerHTML;
+        return [tmpNode, callbacks_1];
     }
 
-    render(){
-        console.log('super');
-    };
-    init(){
-        console.log('init');
-    }
+    render(){};
+    init(){}
 }
 
-interface Constructor<T = Component> {
+interface Constructor<T = Simplement> {
     new (...args: any[]): T;
 }
 
 
 
-export function cmp(config: ComponentConfig) {
+export function cmp(config: SimplementConfig) {
     return <T extends Constructor>(Base: T ) => {
         return class cmp extends Base {
             static selector= config.selector;
@@ -154,6 +158,6 @@ export function cmp(config: ComponentConfig) {
     }
 }
 
-export function attr(target: Component, propertyKey: string){
-    Component.attributesMap.set(`smpl-${target.constructor.name}-${propertyKey}`.toLowerCase(),propertyKey);
+export function attr(target: Simplement, propertyKey: string){
+    Simplement.attributesMap.set(`smpl-${target.constructor.name}-${propertyKey}`.toLowerCase(),propertyKey);
 }

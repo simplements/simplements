@@ -1,9 +1,12 @@
 
 import {DefaultTreeAdapterMap} from "parse5";
-import {computed, effect, WriteSignal} from "@maverick-js/signals";
+import {computed, effect, isWriteSignal, MaybeSignal, WriteSignal} from "@maverick-js/signals";
+import {Simplement} from "./simplement";
 
 
 export type RenderCallback = (root: ShadowRoot, context:Record<string, unknown>)=> void;
+
+export type CustomElement = Element & {[key:string]: MaybeSignal<unknown>} & Simplement;
 export interface TemplateRenderCallbacks {
     listeners: RenderCallback[],
     computed: RenderCallback[]
@@ -44,7 +47,8 @@ export function createTemplate(tree: DefaultTreeAdapterMap['element'], parent: H
             tree.attrs.forEach((attr)=>{
                 if(/(\{\{)\s?([A-Za-z]+)\s?(\}\})/ig.test(attr.value)){
                     callbacks.computed.push((shadowRoot, context)=>{
-                        const _el = shadowRoot.querySelector(`[smpl--node="${nodeId}"]`);
+                        const _el: CustomElement | null = shadowRoot.querySelector(`[smpl--node="${nodeId}"]`);
+
                         const value1 = computed(function () {
                             const s = context[attr.value.replace(/\{|\}|\s/ig, '')] as WriteSignal<string>;
                             return s();
@@ -54,6 +58,12 @@ export function createTemplate(tree: DefaultTreeAdapterMap['element'], parent: H
                             const val: string = value1();
                             try{
                                 _el?.setAttribute(attr.name, val);
+                                if(_el?.attributesMap){
+                                    const name: any = _el.attributesMap.get(attr.name);
+                                    if(name && _el[name] && isWriteSignal(_el[name])){
+                                        (_el[name] as WriteSignal<unknown>)?.set(val);
+                                    }
+                                }
                             }catch (e){
                                 console.error(e);
                             }
@@ -90,9 +100,7 @@ export function createTemplate(tree: DefaultTreeAdapterMap['element'], parent: H
         const nodeId = parent?.getAttribute('smpl--node');
         if(/(\{\{)\s?([A-Za-z]+)\s?(\}\})/ig.test(value)){
             const query = document.createComment(value);
-            console.log(query);
             template.appendChild(query);
-            console.log('value:', value, /(\{\{)\s?([A-Za-z]+)\s?(\}\})/ig.test(value));
             callbacks.computed.push((shadowRoot, context)=>{
                 const _el = shadowRoot.querySelector(`[smpl--node="${nodeId}"]`);
 
@@ -114,7 +122,6 @@ export function createTemplate(tree: DefaultTreeAdapterMap['element'], parent: H
                         }
                         if(nextNodeToReplace){
                             try{
-                                console.log(node);
                                 (node as Text).textContent = val || '';
                             }catch (e){
                                 console.error(e);

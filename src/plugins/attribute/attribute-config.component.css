@@ -4,11 +4,8 @@
     padding: 8px;
     border: 1px solid var(--base-03);
     width: 100%;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: stretch;
-    & form{
-        width: 100%;
-    }
 }
 
 .attribute-form-row{
@@ -22,5 +19,4 @@
     align-items: center;
     flex-wrap: nowrap;
     align-content: center;
-
 }

@@ -1,4 +1,4 @@
-import {attr, cmp, Component} from "../../core/component";
+import {attr, cmp, Simplement} from "../../core/simplement";
 import {effect, signal} from "@maverick-js/signals";
 
 
@@ -7,7 +7,7 @@ import {effect, signal} from "@maverick-js/signals";
     template: Promise.resolve({default:``}),
     styles: Promise.resolve({default:``}),
 })
-export class CustomSlotComponent extends Component{
+export class CustomSlotComponent extends Simplement{
     @attr
     name = signal("");
     elem: HTMLElement | null = null;
