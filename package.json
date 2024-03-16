@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "serve": "rimraf ./dist && node build.js --serve",
-    "build:app": "rimraf ./dist && node build.js"
+    "build:app": "rimraf ./dist && node build.js",
+    "format": "npx prettier . --write",
+    "lint:css": "npx stylelint \"**/*.css\"",
+    "lint:js": "npx eslint \"**/*.{js,ts}\" --fix"
   },
   "author": "yazart",
   "license": "WTFPL",
@@ -24,8 +27,19 @@
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "esbuild": "^0.20.0",
     "esbuild-css-modules-plugin": "^3.1.0",
-    "rimraf": "^5.0.5"
+    "eslint": "^8.57.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "prettier": "3.2.5",
+    "rimraf": "^5.0.5",
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^7.1.0"
   }
 }

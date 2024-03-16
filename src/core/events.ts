@@ -1,7 +1,10 @@
 export interface ModelChangeEvent {
-    value: string;
+  value: string;
 }
 
-export const EVENTS ={
-    'modelChange': (value: string)=>new CustomEvent<ModelChangeEvent>('model-change', {detail: {value: value}})
-}
+export const EVENTS = {
+  modelChange: (value: string) =>
+    new CustomEvent<ModelChangeEvent>('model-change', {
+      detail: { value: value },
+    }),
+};

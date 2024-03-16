@@ -1,12 +1,12 @@
 <form class="block-config">
-    <h3>{{labelHeader}} <button type="button" (click)="change()">change</button></h3>
-    <control-wrapper @label="Название типа блока" @controlname="blockDescription" (model-change)="updateData()">
-        <input slot="control" type="text" required placeholder=" "/>
-    </control-wrapper>
-    <control-wrapper @label="Описание блока" @controlName="blockDescription" (model-change)="updateData()">
-        <textarea slot="control" required placeholder=" "></textarea>
-    </control-wrapper>
-    {{data}}
-    <h4>Аттрибуты блока</h4>
-    <attribute-config></attribute-config>
+  <h3>{{ labelHeader }} <button type="button" (click)="change()">change</button></h3>
+  <control-wrapper @label="Название типа блока" @controlname="blockDescription" (model-change)="updateData()">
+    <input slot="control" type="text" required placeholder=" " />
+  </control-wrapper>
+  <control-wrapper @label="Описание блока" @controlName="blockDescription" (model-change)="updateData()">
+    <textarea slot="control" required placeholder=" "></textarea>
+  </control-wrapper>
+  {{ data }}
+  <h4>Аттрибуты блока</h4>
+  <attribute-config></attribute-config>
 </form>

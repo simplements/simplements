@@ -1,12 +1,12 @@
-.block-config{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background: var(--base-02);
-    border: 1px solid var(--base-03);
-    border-radius: 8px;
-    padding: 8px;
-    align-content: space-between;
-    gap: 16px;
+.block-config {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--base-02);
+  border: 1px solid var(--base-03);
+  border-radius: 8px;
+  padding: 8px;
+  align-content: space-between;
+  gap: 16px;
 }

@@ -1,41 +1,40 @@
+<div class="attribute-form-row">
+  <control-wrapper @controlname="attributeName" @label="Отображаемое название">
+    <input slot="control" type="text" required pattern="^[a-zA-Z]+$" placeholder=" " />
+  </control-wrapper>
+  <control-wrapper @controlname="attributeKey" @label="Ключ">
+    <input slot="control" type="text" required placeholder=" " />
+  </control-wrapper>
 
-    <div class="attribute-form-row">
-        <control-wrapper @controlname="attributeName"  @label="Отображаемое название">
-            <input slot="control" type="text" required pattern="^[a-zA-Z]+$" placeholder=" "/>
-        </control-wrapper>
-        <control-wrapper @controlname="attributeKey"  @label="Ключ">
-            <input slot="control" type="text" required placeholder=" "/>
-        </control-wrapper>
-
-        <control-wrapper @controlname="attributeType"  @label="Тип">
-            <select slot="control" placeholder=" ">
-                <option value="string">Строка</option>
-                <option value="number">Число</option>
-                <option value="boolean">Логическое</option>
-                <option value="date">Дата</option>
-                <option value="bbcode">BBCode</option>
-                <option value="image">Изображение</option>
-                <option value="file">Файл</option>
-            </select>
-        </control-wrapper>
-    </div>
-    <div class="attribute-form-row">
-        <control-wrapper @label="Обязательный" @controlname="requiredAttribute">
-            <select slot="control" placeholder=" " >
-                <option selected value="true">Да</option>
-                <option value="false">Нет</option>
-            </select>
-        </control-wrapper>
-        <control-wrapper @label="Множественный" @controlname="multipleAttribute">
-            <select slot="control" placeholder=" ">
-                <option value="true">Да</option>
-                <option selected value="false">Нет</option>
-            </select>
-        </control-wrapper>
-        <control-wrapper @label="Значение по умолчанию" @controlname="defaultValue" @validation="{{validation}}">
-            <select slot="control" placeholder=" ">
-                <option value="true">Да</option>
-                <option selected value="false">Нет</option>
-            </select>
-        </control-wrapper>
-    </div>
+  <control-wrapper @controlname="attributeType" @label="Тип">
+    <select slot="control" placeholder=" ">
+      <option value="string">Строка</option>
+      <option value="number">Число</option>
+      <option value="boolean">Логическое</option>
+      <option value="date">Дата</option>
+      <option value="bbcode">BBCode</option>
+      <option value="image">Изображение</option>
+      <option value="file">Файл</option>
+    </select>
+  </control-wrapper>
+</div>
+<div class="attribute-form-row">
+  <control-wrapper @label="Обязательный" @controlname="requiredAttribute">
+    <select slot="control" placeholder=" ">
+      <option selected value="true">Да</option>
+      <option value="false">Нет</option>
+    </select>
+  </control-wrapper>
+  <control-wrapper @label="Множественный" @controlname="multipleAttribute">
+    <select slot="control" placeholder=" ">
+      <option value="true">Да</option>
+      <option selected value="false">Нет</option>
+    </select>
+  </control-wrapper>
+  <control-wrapper @label="Значение по умолчанию" @controlname="defaultValue" @validation="{{ validation }}">
+    <select slot="control" placeholder=" ">
+      <option value="true">Да</option>
+      <option selected value="false">Нет</option>
+    </select>
+  </control-wrapper>
+</div>
